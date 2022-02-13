@@ -21,6 +21,14 @@
     owner: navidrome
   become: yes
 
+- name: Add navidrome config
+  ansible.builtin.copy:
+    src: navidrome.toml
+    dest: /home/navidrome/navidrome.toml
+    owner: navidrome
+  notify: restart navidrome
+  become: yes
+
 - name: Install navidrome service
   ansible.builtin.copy:
     src: navidrome.service

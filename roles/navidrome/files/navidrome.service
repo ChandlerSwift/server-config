@@ -9,13 +9,11 @@ WantedBy=multi-user.target
 User=navidrome
 Group=navidrome
 Type=simple
-# --configfile "/home/navidrome/navidrome.toml"
 ExecStart=/home/navidrome/navidrome
 WorkingDirectory=/home/navidrome
 TimeoutStopSec=20
 KillMode=process
 Restart=on-failure
-
 # See https://www.freedesktop.org/software/systemd/man/systemd.exec.html
 DevicePolicy=closed
 NoNewPrivileges=yes
@@ -29,8 +27,5 @@ RestrictNamespaces=yes
 RestrictRealtime=yes
 SystemCallFilter=~@clock @debug @module @mount @obsolete @reboot @setuid @swap
 ReadWritePaths=/home/navidrome
-
-# You can uncomment the following line if you're not using the jukebox This
-# will prevent navidrome from accessing any real (physical) devices
 PrivateDevices=yes
 ProtectSystem=strict
