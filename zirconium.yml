@@ -1,0 +1,7 @@
+---
+- name: Setup Zirconium
+  hosts: zirconium.home.chandlerswift.com
+  roles:
+  - common
+  - mount-nas
+  - navidrome

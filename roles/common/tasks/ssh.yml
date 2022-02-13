@@ -1,0 +1,14 @@
+---
+- name: Add public key to Ansible
+  ansible.posix.authorized_key:
+    user: chandler
+    state: present
+    key: ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEhPyyqS3BGYor3zLbjc8hZuhem3mS8TNmvWogXcnz/b chandler@chandlerswift.com
+
+- name: Disable SSH password login
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    regex: ^(# *)?PasswordAuthentication (yes|no)
+    line: PasswordAuthentication no
+  become: yes
+  notify: Restart sshd

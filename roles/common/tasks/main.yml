@@ -1,0 +1,12 @@
+---
+- name: Set up SSH
+  ansible.builtin.import_tasks: ssh.yml
+
+- name: Set passwordless sudo
+  ansible.builtin.lineinfile:
+    path: /etc/sudoers
+    state: present
+    regexp: '^%sudo ALL='
+    line: '%sudo ALL=(ALL:ALL) NOPASSWD: ALL'
+    validate: /usr/sbin/visudo -cf %s
+  become: yes

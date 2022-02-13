@@ -1,0 +1,42 @@
+---
+- name: Create navidrome user
+  ansible.builtin.user:
+    name: navidrome
+    shell: /usr/bin/false
+  become: yes
+
+# https://www.navidrome.org/docs/installation/linux/
+
+- name: Install ffmpeg
+  ansible.builtin.apt:
+    name: ffmpeg
+    state: present
+  become: yes
+
+- name: Extract navidrome
+  ansible.builtin.unarchive:
+    src: https://github.com/navidrome/navidrome/releases/download/v0.47.5/navidrome_0.47.5_Linux_x86_64.tar.gz
+    dest: /home/navidrome
+    remote_src: yes
+    owner: navidrome
+  become: yes
+
+- name: Install navidrome service
+  ansible.builtin.copy:
+    src: navidrome.service
+    dest: /lib/systemd/system/navidrome.service
+  become: yes
+  register: service
+
+- name: Reload systemd
+  ansible.builtin.systemd:
+    daemon_reload: yes
+  become: yes
+  when: service.changed
+
+- name: Start/enable navidrome
+  ansible.builtin.systemd:
+    name: navidrome
+    enabled: yes
+    state: started
+  become: yes
