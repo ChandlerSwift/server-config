@@ -1,0 +1,13 @@
+---
+
+- name: Install nginx
+  ansible.builtin.apt:
+    name: nginx
+    state: present
+  become: true
+
+- name: Add default index page
+  ansible.builtin.copy:
+    src: index.html
+    dest: /var/www/html/index.html
+  become: true
