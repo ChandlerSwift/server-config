@@ -1,0 +1,20 @@
+---
+- ansible.builtin.file:
+    path: /var/www/0hats.com
+    state: directory
+  become: true
+
+# TODO: generate and copy the actual file!
+
+- name: Get certificate
+  ansible.builtin.command:
+    cmd: certbot --agree-tos --email chandler@chandlerswift.com --test-cert -n certonly -d 0hats.com,www.0hats.com --webroot --webroot-path /var/www/letsencrypt
+    creates: /etc/letsencrypt/live/0hats.com
+  become: true
+
+- name: Configure nginx
+  ansible.builtin.copy:
+    src: 0hats.com.conf
+    dest: /etc/nginx/sites-enabled/0hats.com.conf
+  become: true
+  notify: restart nginx
