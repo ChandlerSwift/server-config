@@ -8,9 +8,10 @@
 
 - name: Get certificate
   ansible.builtin.command:
-    cmd: certbot --agree-tos --email chandler@chandlerswift.com --test-cert -n certonly -d 0hats.com,www.0hats.com --webroot --webroot-path /var/www/letsencrypt
+    cmd: certbot --agree-tos --email chandler@chandlerswift.com -n certonly -d 0hats.com,www.0hats.com --webroot --webroot-path /var/www/letsencrypt
     creates: /etc/letsencrypt/live/0hats.com
   become: true
+  notify: restart nginx
 
 - name: Configure nginx
   ansible.builtin.copy:

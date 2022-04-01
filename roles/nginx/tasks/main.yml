@@ -13,6 +13,7 @@
     src: default.conf
     dest: /etc/nginx/sites-enabled/default
   become: true
+  notify: restart nginx
 
 - name: Add default index page
   ansible.builtin.copy:
