@@ -1,6 +1,6 @@
 ---
 - ansible.builtin.file:
-    path: /var/www/0hats.com
+    path: /var/www/com/0hats
     state: directory
   become: true
 
@@ -15,7 +15,7 @@
 
 - name: Configure nginx
   ansible.builtin.copy:
-    src: 0hats.com.conf
-    dest: /etc/nginx/sites-enabled/0hats.com.conf
+    src: com.0hats.conf
+    dest: /etc/nginx/sites-enabled/com.0hats.conf
   become: true
   notify: restart nginx
