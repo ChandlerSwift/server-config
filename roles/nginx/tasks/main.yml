@@ -10,7 +10,7 @@
 
 - name: Get certificate for host-not-found
   ansible.builtin.command:
-    cmd: certbot --agree-tos --email chandler@chandlerswift.com -n certonly -d host-not-found.home.chandlerswift.com --webroot --webroot-path /var/www/letsencrypt
+    cmd: certbot --agree-tos --email chandler@chandlerswift.com -n certonly -d host-not-found.home.chandlerswift.com --webroot --webroot-path /var/www/letsencrypt --post-hook "systemctl restart nginx"
     creates: /etc/letsencrypt/live/host-not-found.home.chandlerswift.com
   become: true
   notify: restart nginx
