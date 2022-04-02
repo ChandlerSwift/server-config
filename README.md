@@ -4,7 +4,7 @@
 python3 -m venv venv
 . ./venv/bin/activate
 pip install -r requirements.txt
-ansible-playbook -kKc paramiko -i hosts zirconium.yml
+ansible-playbook -kKc paramiko zirconium.yml
 # subsequent runs omit `-kKc paramiko`, since we've configured public key auth and disabled sudo password
 ```
 

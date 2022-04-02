@@ -1,0 +1,12 @@
+---
+- name: restart peertube
+  ansible.builtin.service:
+    name: peertube
+    state: restarted
+  become: yes
+
+- name: restart nginx
+  ansible.builtin.service:
+    name: nginx
+    state: restarted
+  become: yes

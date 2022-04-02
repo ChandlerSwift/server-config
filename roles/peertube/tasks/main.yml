@@ -1,0 +1,160 @@
+---
+
+- name: Create peertube user
+  ansible.builtin.user:
+    name: peertube
+    shell: /usr/bin/false
+    home: /var/www/peertube
+  become: true
+
+# https://docs.joinpeertube.org/install-any-os
+
+- name: Install packages
+  ansible.builtin.apt:
+    name: "{{ item }}"
+    state: present
+  become: true
+  loop:
+    - postgresql
+    - python3-psycopg2
+    - apt-transport-https
+    - gnupg
+    - acl
+    - redis-server
+
+- name: Import the NodeSource GPG key into apt
+  ansible.builtin.apt_key:
+    url: https://keyserver.ubuntu.com/pks/lookup?op=get&fingerprint=on&search=0x1655A0AB68576280
+    id: "68576280"
+    state: present
+  become: true
+
+- name: Add NodeSource deb repository
+  ansible.builtin.apt_repository:
+    repo: 'deb https://deb.nodesource.com/node_16.x {{ ansible_distribution_release }} main'
+    state: present
+  become: true
+
+- name: Install node
+  ansible.builtin.apt:
+    name: nodejs
+    state: present
+  become: true
+
+- name: Install yarn
+  community.general.npm:
+    name: yarn
+    global: true
+  become: true
+
+- name: Create postgresql database
+  community.postgresql.postgresql_db:
+    name: peertube
+  become_user: postgres
+  become: true
+
+- name: Grant postgresql permissions
+  community.postgresql.postgresql_user:
+    db: peertube
+    name: peertube
+    password: "{{ peertube_db_password }}"
+    priv: ALL
+  become_user: postgres
+  become: true
+
+- name: Add postgreql extensions to peertube db
+  community.postgresql.postgresql_ext:
+    name: "{{ item }}"
+    db: peertube
+  loop:
+    - unaccent
+    - pg_trgm
+  become_user: postgres
+  become: true
+
+- name: Extract peertube
+  ansible.builtin.unarchive:
+    src: https://github.com/Chocobozzz/PeerTube/releases/download/v4.1.1/peertube-v4.1.1.tar.xz
+    dest: /var/www/peertube/
+    remote_src: true
+  become_user: peertube
+  become: true
+
+- name: Create latest symlink
+  ansible.builtin.file:
+    path: /var/www/peertube/peertube-latest
+    src: /var/www/peertube/peertube-v4.1.1
+    state: link
+  become_user: peertube
+  become: true
+
+- name: Create peertube config directory
+  ansible.builtin.file:
+    path: /var/www/peertube/config
+    state: directory
+  become_user: peertube
+  become: true
+
+- name: Add peertube default config
+  ansible.builtin.copy:
+    src: default.yaml
+    dest: /var/www/peertube/config/default.yaml
+  become_user: peertube
+  become: true
+  notify: restart peertube
+
+- name: Add peertube production config
+  ansible.builtin.template:
+    src: production.yaml
+    dest: /var/www/peertube/config/production.yaml
+  become_user: peertube
+  become: true
+  notify: restart peertube
+
+- name: Install yarn packages
+  community.general.yarn:
+    path: /var/www/peertube/peertube-latest/
+    production: true
+  become_user: peertube
+  become: true
+
+- name: Get certificate
+  ansible.builtin.command:
+    cmd: certbot --agree-tos --email chandler@chandlerswift.com -n certonly -d videos.chandlerswift.com --webroot --webroot-path /var/www/letsencrypt --post-hook "systemctl restart nginx"
+    creates: /etc/letsencrypt/live/videos.chandlerswift.com
+  become: true
+  notify: restart nginx
+
+- name: Set up default config
+  ansible.builtin.copy:
+    src: peertube.conf
+    dest: /etc/nginx/sites-enabled/videos.chandlerswift.com.conf
+  become: true
+  notify: restart nginx
+
+- name: Adjust sysctl to prevent bufferbloat
+  ansible.builtin.copy:
+    src: 30-peertube-tcp.conf
+    dest: /etc/sysctl.d/30-peertube-tcp.conf
+  become: true
+
+- name: Install peertube service
+  ansible.builtin.copy:
+    src: peertube.service
+    dest: /lib/systemd/system/peertube.service
+  become: true
+  register: service
+  notify: restart peertube
+
+- name: Reload systemd
+  ansible.builtin.systemd:
+    daemon_reload: true
+  become: true
+  when: service.changed
+
+- name: Start/enable peertube
+  ansible.builtin.systemd:
+    name: peertube
+    enabled: true
+    state: started
+  become: true

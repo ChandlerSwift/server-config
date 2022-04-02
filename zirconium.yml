@@ -6,6 +6,7 @@
   - mount-nas
   - navidrome
   - 0hats
+  - peertube
   - role: forwarder
     vars:
       server_names:
