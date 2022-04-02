@@ -8,6 +8,13 @@
     state: present
   become: true
 
+- name: Get certificate for host-not-found
+  ansible.builtin.command:
+    cmd: certbot --agree-tos --email chandler@chandlerswift.com -n certonly -d host-not-found.home.chandlerswift.com --webroot --webroot-path /var/www/letsencrypt
+    creates: /etc/letsencrypt/live/host-not-found.home.chandlerswift.com
+  become: true
+  notify: restart nginx
+
 - name: Set up default config
   ansible.builtin.copy:
     src: default.conf
