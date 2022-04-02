@@ -1,0 +1,14 @@
+---
+- name: Get certificate
+  ansible.builtin.command:
+    cmd: certbot --agree-tos --email chandler@chandlerswift.com -n certonly -d {{ server_names | join(' -d ') }} --webroot --webroot-path /var/www/letsencrypt
+    creates: /etc/letsencrypt/live/{{ server_names[0] }}
+  become: true
+  notify: restart nginx
+
+- name: Configure nginx
+  ansible.builtin.template:
+    src: nginx.conf.j2
+    dest: /etc/nginx/sites-enabled/{{ server_names[0] }}.conf
+  become: true
+  notify: restart nginx

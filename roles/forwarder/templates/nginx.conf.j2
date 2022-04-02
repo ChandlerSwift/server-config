@@ -1,0 +1,35 @@
+server {
+
+    server_name {{ server_names | join(' ') }};
+
+    gzip on;
+
+    location / {
+        include proxy_params;
+        proxy_pass {{ proxy_pass }};
+    }
+
+    listen [::]:443 ssl;
+    listen 443 ssl;
+    location /.well-known/acme-challenge/ {
+        root /var/www/letsencrypt;
+        try_files $uri $uri/ =404;
+    }
+    ssl_certificate /etc/letsencrypt/live/{{ server_names[0] }}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/{{ server_names[0] }}/privkey.pem;
+    include /etc/letsencrypt/options-ssl-nginx.conf;
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
+
+    {{ additional_https_config }}
+}
+
+server {
+    location /.well-known/acme-challenge/ {
+        root /var/www/letsencrypt;
+        try_files $uri $uri/ =404;
+    }
+    return 301 https://$host$request_uri;
+    server_name {{ server_names | join(' ') }};
+    listen 80;
+    listen [::]:80;
+}
