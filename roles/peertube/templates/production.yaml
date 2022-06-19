@@ -124,7 +124,7 @@ transcoding:
   allow_audio_files: true
 
   # Amount of threads used by ffmpeg for 1 transcoding job
-  threads: 1
+  threads: 4
   # Amount of transcoding jobs to execute in parallel
   concurrency: 1
 
@@ -137,10 +137,10 @@ transcoding:
     0p: false # audio-only (creates mp4 without video stream, always created when enabled)
     144p: false
     240p: false
-    360p: false
-    480p: false
-    720p: false
-    1080p: false
+    360p: true
+    480p: true
+    720p: true
+    1080p: true
     1440p: false
     2160p: false
 
