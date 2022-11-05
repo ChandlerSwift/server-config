@@ -1,0 +1,17 @@
+---
+
+- ansible.builtin.include_role:
+    name: static-fileserver
+  vars:
+    server_names:
+      - darylfanclub.chandlerswift.com
+
+- ansible.builtin.copy:
+    src: index.html
+    dest: /var/www/darylfanclub.chandlerswift.com/index.html
+  become: true
+
+- ansible.builtin.copy:
+    src: darylfanclub.jpeg
+    dest: /var/www/darylfanclub.chandlerswift.com/darylfanclub.jpeg
+  become: true
