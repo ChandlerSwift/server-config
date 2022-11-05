@@ -38,5 +38,7 @@
       python3 /var/www/darylfanclub.chandlerswift.com/generate.py > /var/www/darylfanclub.chandlerswift.com/events.ical
       && sed -i "s/<span class='last-updated'>.*<\\/span>/<span class='last-updated'>$(date)<\\/span>/" /var/www/darylfanclub.chandlerswift.com/index.html
     user: www-data
+    hour: 0
+    minute: 0
   become: true
   become_user: www-data
