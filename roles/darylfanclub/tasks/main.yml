@@ -10,8 +10,33 @@
     src: index.html
     dest: /var/www/darylfanclub.chandlerswift.com/index.html
   become: true
+  become_user: www-data
 
 - ansible.builtin.copy:
     src: darylfanclub.jpeg
     dest: /var/www/darylfanclub.chandlerswift.com/darylfanclub.jpeg
   become: true
+  become_user: www-data
+
+- ansible.builtin.copy:
+    src: generate.py
+    dest: /var/www/darylfanclub.chandlerswift.com/generate.py
+  become: true
+  become_user: www-data
+
+- name: Install packages
+  ansible.builtin.apt:
+    pkg:
+    - python3-requests
+    - python3-bs4
+    state: present
+  become: true
+
+- ansible.builtin.cron:
+    name: Regenerate darylfanclub ical file
+    job: >
+      python3 /var/www/darylfanclub.chandlerswift.com/generate.py > /var/www/darylfanclub.chandlerswift.com/events.ical
+      && sed -i "s/<span class='last-updated'>.*<\\/span>/<span class='last-updated'>$(date)<\\/span>/" /var/www/darylfanclub.chandlerswift.com/index.html
+    user: www-data
+  become: true
+  become_user: www-data

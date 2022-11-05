@@ -2,6 +2,8 @@
 - ansible.builtin.file:
     path: /var/www/{{ server_names[0] }}
     state: directory
+    owner: www-data
+    group: www-data
   become: true
 
 # TODO: generate and copy the actual files!
