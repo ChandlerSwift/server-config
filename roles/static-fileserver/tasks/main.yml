@@ -1,0 +1,22 @@
+---
+- ansible.builtin.file:
+    path: /var/www/{{ server_names[0] }}
+    state: directory
+  become: true
+
+# TODO: generate and copy the actual files!
+
+# TODO: community.crypto.acme_certificate
+- name: Get certificate
+  ansible.builtin.command:
+    cmd: certbot --agree-tos --email chandler@chandlerswift.com -n certonly -d {{ server_names | join(',') }} --webroot --webroot-path /var/www/letsencrypt --post-hook "systemctl restart nginx"
+    creates: /etc/letsencrypt/live/{{ server_names[0] }}
+  become: true
+  notify: restart nginx
+
+- name: Configure nginx
+  ansible.builtin.template:
+    src: nginx.conf.j2
+    dest: /etc/nginx/sites-enabled/{{ server_names[0] }}.conf
+  become: true
+  notify: restart nginx

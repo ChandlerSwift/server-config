@@ -5,7 +5,6 @@
   - common
   - mount-nas
   - navidrome
-  - 0hats
   - peertube
   - role: forwarder
     vars:
@@ -26,3 +25,8 @@
         - isaacswift.com
         - www.isaacswift.com
       proxy_pass: http://isaac.home.chandlerswift.com/
+  - role: static-fileserver
+    vars:
+      server_names:
+        - 0hats.com
+        - www.0hats.com
