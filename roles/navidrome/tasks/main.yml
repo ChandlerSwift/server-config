@@ -48,3 +48,10 @@
     enabled: yes
     state: started
   become: yes
+
+- ansible.builtin.include_role:
+    name: forwarder
+  vars:
+    server_names:
+      - music.chandlerswift.com
+    proxy_pass: http://localhost:4533/
