@@ -4,7 +4,9 @@
   roles:
   - common
   - mount-nas
-  - navidrome
+  - role: navidrome
+    vars:
+      navidrome_version: 0.48.0
   - peertube
   - role: forwarder
     vars:
