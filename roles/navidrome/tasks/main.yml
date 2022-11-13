@@ -19,6 +19,7 @@
     dest: /home/navidrome
     remote_src: yes
     owner: navidrome
+  notify: restart navidrome
   become: yes
 
 - name: Add navidrome config
