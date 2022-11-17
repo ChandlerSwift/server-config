@@ -1,0 +1,20 @@
+---
+
+- ansible.builtin.include_role:
+    name: static-fileserver
+  vars:
+    server_names:
+      - flintlock.chandlerswift.com
+      - flintlock.isaacswift.com
+
+- ansible.builtin.copy:
+    src: index.html
+    dest: /var/www/flintlock.chandlerswift.com/index.html
+  become: true
+  become_user: www-data
+
+- ansible.builtin.copy:
+    src: staff.jpeg
+    dest: /var/www/flintlock.chandlerswift.com/staff.jpeg
+  become: true
+  become_user: www-data
