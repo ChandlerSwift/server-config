@@ -8,6 +8,18 @@
     state: present
   become: true
 
+- name: Add default ssl config values
+  ansible.builtin.get_url:
+    url: https://raw.githubusercontent.com/certbot/certbot/v2.0.0/certbot-nginx/certbot_nginx/_internal/tls_configs/options-ssl-nginx.conf
+    dest: /etc/letsencrypt/options-ssl-nginx.conf
+  become: true
+
+- name: Add dhparams.pem
+  ansible.builtin.get_url:
+    url: https://raw.githubusercontent.com/certbot/certbot/v2.0.0/certbot/certbot/ssl-dhparams.pem
+    dest: /etc/letsencrypt/ssl-dhparams.pem
+  become: true
+
 - name: Get certificate for host-not-found
   ansible.builtin.command:
     cmd: certbot --agree-tos --email chandler@chandlerswift.com -n certonly -d host-not-found.home.chandlerswift.com --webroot --webroot-path /var/www/html --post-hook "systemctl restart nginx"
