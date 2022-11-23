@@ -1,4 +1,9 @@
 ---
+# Additional setup:
+# * Install Debian 11
+#   - `chandler` as sudo-enabled user
+#   - ssh server enabled
+# * Set up static IP in router: https://pfsense.home.chandlerswift.com/services_dhcp_edit.php?if=lan&id=1
 - name: Setup Zirconium
   hosts: zirconium.home.chandlerswift.com
   roles:
