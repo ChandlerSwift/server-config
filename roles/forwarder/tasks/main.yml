@@ -1,7 +1,7 @@
 ---
 - name: Get certificate
   ansible.builtin.command:
-    cmd: certbot --agree-tos --email chandler@chandlerswift.com -n certonly -d {{ server_names | join(' -d ') }} --webroot --webroot-path /var/www/letsencrypt --post-hook "systemctl restart nginx"
+    cmd: certbot --agree-tos --email chandler@chandlerswift.com -n certonly -d {{ server_names | join(' -d ') }} --webroot --webroot-path /var/www/html --post-hook "systemctl restart nginx"
     creates: /etc/letsencrypt/live/{{ server_names[0] }}
   become: true
   notify: restart nginx

@@ -13,7 +13,7 @@ server {
     listen 443 ssl;
 
     location /.well-known/acme-challenge/ {
-        root /var/www/letsencrypt;
+        root /var/www/html;
         try_files $uri $uri/ =404;
     }
     ssl_certificate /etc/letsencrypt/live/{{ server_names[0] }}/fullchain.pem;
@@ -24,7 +24,7 @@ server {
 
 server {
     location /.well-known/acme-challenge/ {
-        root /var/www/letsencrypt;
+        root /var/www/html;
         try_files $uri $uri/ =404;
     }
     return 301 https://$host$request_uri;

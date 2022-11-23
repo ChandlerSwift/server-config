@@ -119,7 +119,7 @@
 
 - name: Get certificate
   ansible.builtin.command:
-    cmd: certbot --agree-tos --email chandler@chandlerswift.com -n certonly -d videos.chandlerswift.com --webroot --webroot-path /var/www/letsencrypt --post-hook "systemctl restart nginx"
+    cmd: certbot --agree-tos --email chandler@chandlerswift.com -n certonly -d videos.chandlerswift.com --webroot --webroot-path /var/www/html --post-hook "systemctl restart nginx"
     creates: /etc/letsencrypt/live/videos.chandlerswift.com
   become: true
   notify: restart nginx

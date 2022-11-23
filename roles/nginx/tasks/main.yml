@@ -10,7 +10,7 @@
 
 - name: Get certificate for host-not-found
   ansible.builtin.command:
-    cmd: certbot --agree-tos --email chandler@chandlerswift.com -n certonly -d host-not-found.home.chandlerswift.com --webroot --webroot-path /var/www/letsencrypt --post-hook "systemctl restart nginx"
+    cmd: certbot --agree-tos --email chandler@chandlerswift.com -n certonly -d host-not-found.home.chandlerswift.com --webroot --webroot-path /var/www/html --post-hook "systemctl restart nginx"
     creates: /etc/letsencrypt/live/host-not-found.home.chandlerswift.com
   become: true
   notify: restart nginx
@@ -26,12 +26,6 @@
   ansible.builtin.copy:
     src: index.html
     dest: /var/www/html/index.html
-  become: true
-
-- name: Create directory for certbot renewals
-  ansible.builtin.file:
-    path: /var/www/letsencrypt
-    state: directory
   become: true
 
 - name: Setup cronjob for renewal
