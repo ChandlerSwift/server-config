@@ -37,5 +37,9 @@
       server_names:
         - 0hats.com
         - www.0hats.com
+  - role: static-fileserver
+    vars:
+      server_names:
+        - home.chandlerswift.com
   - darylfanclub
   - flintlock
