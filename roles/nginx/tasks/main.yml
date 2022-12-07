@@ -43,6 +43,7 @@
 - name: Setup cronjob for renewal
   ansible.builtin.cron:
     name: certbot-renewal
+    # TODO: also mosquitto etc?
     job: /usr/local/bin/certbot -q renew && nginx -t && nginx -t reload
     minute: "10"
     hour: "18"

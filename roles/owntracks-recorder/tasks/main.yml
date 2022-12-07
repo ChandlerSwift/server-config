@@ -1,0 +1,86 @@
+---
+- name: Import the owntracks GPG key into apt
+  ansible.builtin.apt_key:
+    url: https://raw.githubusercontent.com/owntracks/recorder/master/etc/repo.owntracks.org.gpg.key
+    id: EAB5C42B35B2139B9CD0CD14BE1675153E0A5116
+    state: present
+  become: true
+
+- name: Add owntracks deb repository
+  ansible.builtin.apt_repository:
+    repo: 'deb http://repo.owntracks.org/debian {{ ansible_distribution_release }} main'
+    state: present
+  become: true
+
+- name: Install packages
+  ansible.builtin.apt:
+    name:
+    - ot-recorder
+    - mosquitto
+    state: present
+  become: true
+
+- name: Ensure mosquitto_passwd file exists
+  ansible.builtin.file:
+    path: /etc/mosquitto/passwd
+    owner: root
+    group: mosquitto
+    mode: 0640
+  become: yes
+
+- name: Create user for mosquitto
+  with_dict: "{{ owntracks_users }}"
+  include_tasks: mosquitto_user.yml
+
+# https://mosquitto.org/man/mosquitto-conf-5.html
+- name: Configure Mosquitto
+  ansible.builtin.copy:
+    src: mosquitto.conf
+    dest: /etc/mosquitto/mosquitto.conf
+  become: true
+  notify: restart mosquitto
+
+- name: Start/enable mosquitto
+  ansible.builtin.systemd:
+    name: mosquitto
+    enabled: true
+    state: started
+  become: true
+
+- name: Configure ot-recorder
+  ansible.builtin.template:
+    src: owntracks.conf.j2
+    dest: /etc/default/ot-recorder
+  become: true
+  notify: restart ot-recorder
+
+- name: Set MQTT port for ot-recorder
+  ansible.builtin.lineinfile:
+    path: /etc/default/ot-recorder
+    regex: ^(# *)?OTR_PORT=
+    line: OTR_PORT=8883
+  become: true
+  notify: restart ot-recorder
+
+- name: Set MQTT user for ot-recorder
+  ansible.builtin.lineinfile:
+    path: /etc/default/ot-recorder
+    regex: ^(# *)?OTR_USER=
+    line: OTR_USER=recorder
+  become: true
+  notify: restart ot-recorder
+
+- name: Set MQTT pass for ot-recorder
+  ansible.builtin.lineinfile:
+    path: /etc/default/ot-recorder
+    regex: ^(# *)?OTR_PASS=
+    line: OTR_PASS={{ owntracks_users['recorder'] }}
+  become: true
+  notify: restart ot-recorder
+
+- name: Start/enable ot-recorder
+  ansible.builtin.systemd:
+    name: ot-recorder
+    enabled: true
+    state: started
+  become: true

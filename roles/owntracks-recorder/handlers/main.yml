@@ -1,0 +1,12 @@
+---
+- name: restart mosquitto
+  ansible.builtin.service:
+    name: mosquitto
+    state: restarted
+  become: yes
+
+- name: restart ot-recorder
+  ansible.builtin.service:
+    name: ot-recorder
+    state: restarted
+  become: yes

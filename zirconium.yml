@@ -43,3 +43,11 @@
         - home.chandlerswift.com
   - darylfanclub
   - flintlock
+  - role: forwarder
+    vars:
+      server_names:
+        - whereis.chandlerswift.com
+      proxy_pass: http://localhost:8083/
+  # owntracks-recorder must be after the whereis.chandlerswift.com forwarder,
+  # since it uses the TLS keypair from that domain.
+  - owntracks-recorder # TODO: save data off of zirconium
