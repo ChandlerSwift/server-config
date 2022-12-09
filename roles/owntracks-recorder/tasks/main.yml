@@ -49,32 +49,8 @@
 
 - name: Configure ot-recorder
   ansible.builtin.template:
-    src: owntracks.conf.j2
+    src: ot-recorder.j2
     dest: /etc/default/ot-recorder
-  become: true
-  notify: restart ot-recorder
-
-- name: Set MQTT port for ot-recorder
-  ansible.builtin.lineinfile:
-    path: /etc/default/ot-recorder
-    regex: ^(# *)?OTR_PORT=
-    line: OTR_PORT=8883
-  become: true
-  notify: restart ot-recorder
-
-- name: Set MQTT user for ot-recorder
-  ansible.builtin.lineinfile:
-    path: /etc/default/ot-recorder
-    regex: ^(# *)?OTR_USER=
-    line: OTR_USER=recorder
-  become: true
-  notify: restart ot-recorder
-
-- name: Set MQTT pass for ot-recorder
-  ansible.builtin.lineinfile:
-    path: /etc/default/ot-recorder
-    regex: ^(# *)?OTR_PASS=
-    line: OTR_PASS={{ owntracks_users['recorder'] }}
   become: true
   notify: restart ot-recorder
 
