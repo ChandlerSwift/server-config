@@ -1,13 +1,12 @@
 ---
 - name: check if user already exists
-  ansible.builtin.lineinfile:
-    dest: /etc/mosquitto/passwd
-    line: "{{ item.key }}"
-  check_mode: true
+  ansible.builtin.command: grep {{ item.key }} /etc/mosquitto/passwd
+  changed_when: false
+  ignore_errors: true
   register: user_in_file
   become: true
 
 - name: create user
   ansible.builtin.command: mosquitto_passwd -b /etc/mosquitto/passwd {{ item.key }} {{ item.value }}
   become: true
-  when: user_in_file.changed
+  when: user_in_file.failed
