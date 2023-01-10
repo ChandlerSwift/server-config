@@ -1,0 +1,49 @@
+---
+# Additional setup:
+# * Install Armbian 22.11.1 Minimal (e.g.
+#   https://armbian.lv.auroradev.org/dl/odroidhc4/archive/Armbian_22.11.1_Odroidhc4_bullseye_current_5.19.17_minimal.img.xz)
+# * if petitboot is still trying to run, remove it; apparently armbian won't
+#   work with it (https://www.armbian.com/odroid-hc4/ -- I didn't have much luck
+#   with the "Bootloader Bypass Method", so I used "Petitboot Console Method")
+# * Initial boot (using keyboard and display):
+#   - root password empty
+#   - user Chandler Swift (`chandler`), password
+#   - auto timezone and location fine
+#   - locale en_US.UTF-8
+# * set hostname to `nas` in `/etc/hostname` and `/etc/hosts` (note that no
+#   editor is installed at this point, so I used `echo`, `sed`, `cat` and `>`)
+# Note that this doesn't include any config of the disks, as those likely
+# will outlive server setups here.
+- name: Setup NAS
+  hosts: nas.home.chandlerswift.com
+  roles:
+  - common
+  tasks:
+  # - name: Remove wpa_supplicant # Why was this here in the first place?? # Oh yeah, because it's a dep of networkmanager, which is required for our DHCP to work
+  #   ansible.builtin.apt:
+  #     name: wpasupplicant
+  #     state: absent
+  #   become: true
+  - name: Install ZFS (may be very slow, if compiling DKMS modules)
+    ansible.builtin.apt:
+      name:
+        - zfs-dkms
+        - zfsutils-linux
+      state: present
+      default_release: bullseye-backports
+      update_cache: true
+    become: true
+  - name: Install Restic
+    ansible.builtin.apt:
+      name: restic
+      state: present
+    become: true
+  - name: Configure backups
+    ansible.builtin.fail:
+      message: TODO
+  - name: Configure SMB
+    ansible.builtin.fail:
+      message: TODO
+  - name: Configure LEDs
+    ansible.builtin.fail:
+      message: "TODO (as root): echo 'disk-activity' > /sys/devices/platform/leds/leds/blue:status/trigger"
