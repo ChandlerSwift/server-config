@@ -33,6 +33,7 @@
       default_release: bullseye-backports
       update_cache: true
     become: true
+  # TODO: sudo zpool import -f nas
   - name: Install Restic
     ansible.builtin.apt:
       name: restic
