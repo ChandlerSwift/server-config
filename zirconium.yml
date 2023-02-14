@@ -11,7 +11,7 @@
   - mount-nas
   - role: navidrome
     vars:
-      navidrome_version: 0.48.0
+      navidrome_version: 0.49.3
   - peertube
   - role: forwarder
     vars:
