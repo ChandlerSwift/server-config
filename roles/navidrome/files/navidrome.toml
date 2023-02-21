@@ -1,2 +1,3 @@
 MusicFolder = "/mnt/nas/media/music"
 ScanSchedule = "@every 12h"
+EnableSharing = true
