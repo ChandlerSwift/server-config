@@ -39,6 +39,11 @@
       name: restic
       state: present
     become: true
+  - name: Install Borg for receiving desktop backups
+    ansible.builtin.apt:
+      name: borgbackup
+      state: present
+    become: true
   - name: Configure backups
     ansible.builtin.fail:
       message: TODO
