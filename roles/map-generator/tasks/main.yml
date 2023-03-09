@@ -1,0 +1,36 @@
+---
+- name: Install packages
+  ansible.builtin.package:
+    name:
+      - jre-openjdk
+    state: present
+  become: true
+- name: Acquire planetiler
+  ansible.builtin.get_url:
+    url: https://github.com/onthegomap/planetiler/releases/download/v0.5.0/planetiler.jar
+    checksum: "sha256:5f08d8f351751373084b1c2abd21bb38cbf66357dd2a02d2692d3561f16db70b"
+    dest: /home/chandler/planetiler.jar
+# TODO: set up to use diffs -- daily?: https://wiki.openstreetmap.org/wiki/Planet.osm/diffs
+- name: Create systemd user directory
+  ansible.builtin.file:
+    path: /home/chandler/.config/systemd/user
+    state: directory
+- name: Set up update-maps service
+  ansible.builtin.copy:
+    src: "{{ item }}"
+    dest: /home/chandler/.config/systemd/user/{{ item }}
+  loop:
+    - update-maps.service
+    - update-maps.timer
+- name: Enable update-maps service
+  ansible.builtin.systemd:
+    name: update-maps.timer
+    state: started
+    enabled: true
+    scope: user
+# https://wiki.archlinux.org/title/Systemd/Timers#Caveats
+- name: Enable lingering on chandler, to allow timers to run when not logged in
+  ansible.builtin.command:
+    cmd: loginctl enable-linger chandler
+    creates: /var/lib/systemd/linger/chandler
+  become: yes

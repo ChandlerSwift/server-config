@@ -1,0 +1,29 @@
+---
+# Additional setup:
+# * Install Arch
+#   - `chandler` as sudo-enabled user
+#   - ssh server enabled
+# * additional packages (many of these come free with `base` and `base-devel`?):
+#     archlinux-keyring autoconf automake base binutils bison debugedit
+#     efibootmgr fakeroot file findutils flex gawk gcc gettext git grep groff
+#     gzip intel-ucode jre-openjdk libtool linux linux-firmware m4 make openssh
+#     pacman patch pkgconf python sed sudo texinfo which zram-generator
+#
+# Note that this machine as configured (16GB ram) is somewhat inadequate for
+# this -- it's going to do a fair bit of swapping to disk.
+#
+#     WAR - Planetiler will use ~15G memory-mapped files for node locations and multipolygon geometries but the OS only
+#     Mar 08 21:54:47 maps java[864]: has 10G available to cache pages, this may slow the import down. To speed up, run on a machine with more
+#     Mar 08 21:54:47 maps java[864]: memory or reduce the -Xmx setting.
+#
+# Note that this role doesn't actually _serve_ any maps -- it just generates
+# them! Serving (e.g. with https://github.com/maptiler/tileserver-gl) will be
+# a separate role (and could potentially be done on zirconium instead, once
+# the sources are generated here. Then this VM could remain offline for the
+# bulk of the time. That will become increasingly important as I generate larger
+# extracts, specifically planet.pbf!)
+- name: Setup Maps
+  hosts: maps.home.chandlerswift.com
+  roles:
+  - common
+  - map-generator

@@ -1,0 +1,10 @@
+[Unit]
+Description=Update maps weekly
+
+[Timer]
+# https://wiki.openstreetmap.org/wiki/Planet.osm#Update_frequency
+OnCalendar=Wed
+Persistent=true
+
+[Install]
+WantedBy=timers.target

@@ -2,7 +2,7 @@
 - name: Set up SSH
   ansible.builtin.import_tasks: ssh.yml
 
-- name: Set passwordless sudo
+- name: Set passwordless sudo (Debian)
   ansible.builtin.lineinfile:
     path: /etc/sudoers
     state: present
@@ -10,3 +10,14 @@
     line: '%sudo ALL=(ALL:ALL) NOPASSWD: ALL'
     validate: /usr/sbin/visudo -cf %s
   become: yes
+  when: ansible_facts.distribution != "Archlinux"
+
+- name: Set passwordless sudo (Arch)
+  ansible.builtin.lineinfile:
+    path: /etc/sudoers
+    state: present
+    regexp: '^%wheel ALL='
+    line: '%wheel ALL=(ALL:ALL) NOPASSWD: ALL'
+    validate: /usr/sbin/visudo -cf %s
+  become: yes
+  when: ansible_facts.distribution == "Archlinux"

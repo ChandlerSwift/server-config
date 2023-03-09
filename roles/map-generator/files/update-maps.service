@@ -1,0 +1,6 @@
+[Unit]
+Description=Update the maps
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/java -Xmx6g -jar planetiler.jar --download --area=north-america --mbtiles=north-america.mbtiles --force
