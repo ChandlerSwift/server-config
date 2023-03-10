@@ -15,16 +15,16 @@
   ansible.builtin.file:
     path: /home/chandler/.config/systemd/user
     state: directory
-- name: Set up update-maps service
+- name: Set up update-vector-maps service
   ansible.builtin.copy:
     src: "{{ item }}"
     dest: /home/chandler/.config/systemd/user/{{ item }}
   loop:
-    - update-maps.service
-    - update-maps.timer
-- name: Enable update-maps service
+    - update-vector-maps.service
+    - update-vector-maps.timer
+- name: Enable update-vector-maps service
   ansible.builtin.systemd:
-    name: update-maps.timer
+    name: update-vector-maps.timer
     state: started
     enabled: true
     scope: user

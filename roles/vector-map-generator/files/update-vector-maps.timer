@@ -1,5 +1,5 @@
 [Unit]
-Description=Update maps weekly
+Description=Update vector maps weekly
 
 [Timer]
 # https://wiki.openstreetmap.org/wiki/Planet.osm#Update_frequency

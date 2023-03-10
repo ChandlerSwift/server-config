@@ -26,4 +26,4 @@
   hosts: maps.home.chandlerswift.com
   roles:
   - common
-  - map-generator
+  - vector-map-generator
