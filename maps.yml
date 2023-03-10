@@ -27,3 +27,4 @@
   roles:
   - common
   - vector-map-generator
+  - osm-postgres-database

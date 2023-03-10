@@ -1,0 +1,104 @@
+---
+- name: Install Community packages
+  ansible.builtin.package:
+    name:
+      - postgresql
+      - postgis
+      - python-psycopg2 # required for both the Ansible module and for 
+  become: true
+
+# https://wiki.archlinux.org/title/PostgreSQL#Initial_configuration
+- name: Perform Postgres initial configuration
+  ansible.builtin.command:
+    cmd: initdb -D /var/lib/postgres/data --auth-local=peer --auth-host=scram-sha-256
+    creates: /var/lib/postgres/data/PG_VERSION
+  become: true
+  become_user: postgres
+
+- name: Start/enable postgres server
+  ansible.builtin.systemd:
+    name: postgresql
+    enabled: true
+    state: started
+  become: true
+
+- name: Install AUR packages
+  kewlfft.aur.aur:
+    name:
+      - osm2pgsql
+
+- name: Create postgresl user
+  community.postgresql.postgresql_user:
+    name: osm
+    password: "{{ osm_db_password }}"
+  become_user: postgres
+  become: true
+
+- name: Create postgresql database
+  community.postgresql.postgresql_db:
+    name: osm
+    owner: osm
+  become_user: postgres
+  become: true
+
+# https://www.postgresql.org/docs/current/libpq-pgpass.html
+- name: Store password for user
+  ansible.builtin.copy:
+    content: "localhost:5432:osm:osm:{{ osm_db_password }}"
+    dest: /home/chandler/.pgpass
+    mode: '0600'
+
+# CREATE EXTENSION postgis;
+# CREATE EXTENSION hstore;
+- name: Add postgreql extensions to db
+  community.postgresql.postgresql_ext:
+    name: "{{ item }}"
+    db: osm
+  loop:
+    - postgis
+    - hstore
+  become_user: postgres
+  become: true
+
+# TODO: optimizations as recommended in osm2pgsql's docs?
+# https://osm2pgsql.org/doc/manual.html#tuning-the-postgresql-server
+
+# TODO: switch2osm recommends these. Do they speed something up? Seems to work
+# fine without, and I can't find any mention on osm2pgsql's docs. I did a fair
+# bit of detective work trying to figure out why they include these, and I came
+# up empty. I should check and see if I can figure out why that is.
+#
+#   ALTER TABLE geometry_columns OWNER TO postgres;
+#   ALTER TABLE spatial_ref_sys OWNER TO postgres;
+
+- name: Acquire openstreetmap-carto
+  ansible.builtin.git:
+    repo: https://github.com/gravitystorm/openstreetmap-carto
+    dest: /home/chandler/openstreetmap-carto
+
+# - name: Install carto package
+#   community.general.npm:
+#     carto
+#     path: /home/chandler/openstreetmap-carto # TODO
+
+# osm2pgsql \
+#     -d osm \
+#     -U osm
+#     -H localhost
+#     --create \
+#     --slim \
+#     -G \
+#     --hstore \
+#     --tag-transform-script openstreetmap-carto/openstreetmap-carto.lua \
+#     -C 8192 \
+#     --number-processes 4 \
+#     -S openstreetmap-carto/openstreetmap-carto.style \
+#     minnesota-latest.osm.pbf
+
+# psql -d gis -f openstreetmap-carto/indexes.sql
+
+# sudo pacman -Sy python-yaml python-requests
+# ./scripts/get-external-data.py
+
+# sudo pacman -Sy unzip
+# ./scripts/get-fonts.sh
