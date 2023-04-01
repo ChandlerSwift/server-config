@@ -1,0 +1,30 @@
+---
+- name: install docker-compose
+  ansible.builtin.package:
+    name: docker-compose
+    state: present
+  become: true
+
+- name: create immich directory
+  ansible.builtin.file:
+    path: /home/chandler/immich
+    state: directory
+
+## We can't do this, since this file requires 
+# - name: download docker-compose.yml file
+#   ansible.builtin.get_url:
+#     url: https://github.com/immich-app/immich/releases/download/v1.52.1/docker-compose.yml
+#     dest: /home/chandler/immich/docker-compose.yml
+
+- name: Create .env config file
+  ansible.builtin.copy:
+    src: "{{ item }}"
+    dest: /home/chandler/immich/{{ item }}
+  loop:
+    - .env
+    - docker-compose.yml
+
+- name: start immich
+  community.docker.docker_compose:
+    project_src: /home/chandler/immich
+    pull: true

@@ -1,7 +1,9 @@
 ---
 - name: Install Docker
   ansible.builtin.apt:
-    name: docker.io
+    name:
+    - docker.io
+    - python3-docker # for Ansible's community.docker
     state: present
   become: yes
 
