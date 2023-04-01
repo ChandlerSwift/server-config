@@ -62,3 +62,5 @@
       server_names:
         - photos.chandlerswift.com
       proxy_pass: http://localhost:2283/
+      additional_https_config: |
+        client_max_body_size 12G; # default is 1M
