@@ -51,6 +51,11 @@
   # owntracks-recorder must be after the whereis.chandlerswift.com forwarder,
   # since it uses the TLS keypair from that domain.
   - owntracks-recorder # TODO: save data off of zirconium
+  - role: forwarder
+    vars:
+      server_names:
+        - maps.chandlerswift.com
+      proxy_pass: http://maps.home.chandlerswift.com:8080/
   - immich
   - role: forwarder
     vars:
