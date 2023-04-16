@@ -36,8 +36,8 @@ server {
         root /var/www/html;
         try_files $uri $uri/ =404;
     }
-    ssl_certificate /etc/letsencrypt/live/host-not-found.home.chandlerswift.com/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/host-not-found.home.chandlerswift.com/privkey.pem;
+    ssl_certificate /etc/letsencrypt/live/{{ not_found_hostname }}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/{{ not_found_hostname }}/privkey.pem;
     include /etc/letsencrypt/options-ssl-nginx.conf;
     ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
 }

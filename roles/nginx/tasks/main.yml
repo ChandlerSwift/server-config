@@ -22,14 +22,14 @@
 
 - name: Get certificate for host-not-found
   ansible.builtin.command:
-    cmd: certbot --agree-tos --email chandler@chandlerswift.com -n certonly -d host-not-found.home.chandlerswift.com --webroot --webroot-path /var/www/html --post-hook "systemctl restart nginx"
-    creates: /etc/letsencrypt/live/host-not-found.home.chandlerswift.com
+    cmd: certbot --agree-tos --email chandler@chandlerswift.com -n certonly -d {{ not_found_hostname }} --webroot --webroot-path /var/www/html --post-hook "systemctl restart nginx"
+    creates: /etc/letsencrypt/live/{{ not_found_hostname }}
   become: true
   notify: restart nginx
 
 - name: Set up default config
-  ansible.builtin.copy:
-    src: default.conf
+  ansible.builtin.template:
+    src: default.conf.j2
     dest: /etc/nginx/sites-enabled/default
   become: true
   notify: restart nginx
