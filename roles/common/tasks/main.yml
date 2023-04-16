@@ -1,4 +1,10 @@
 ---
+- name: Add `chandler` account
+  ansible.builtin.user:
+    name: chandler
+    comment: Chandler Swift
+    groups: sudo
+
 - name: Set up SSH
   ansible.builtin.import_tasks: ssh.yml
 
