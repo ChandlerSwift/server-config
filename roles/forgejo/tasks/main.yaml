@@ -1,0 +1,65 @@
+---
+# https://forgejo.org/docs/latest/admin/installation/#installation-from-binary
+
+- ansible.builtin.get_url:
+    url: https://codeberg.org/forgejo/forgejo/releases/download/v1.20.1-0/forgejo-1.20.1-0-linux-amd64
+    dest: /usr/local/bin/forgejo
+    checksum: sha256:https://codeberg.org/forgejo/forgejo/releases/download/v1.20.1-0/forgejo-1.20.1-0-linux-amd64.sha256
+    mode: '755'
+  become: true
+
+- ansible.builtin.package:
+    name:
+      - git
+      - git-lfs
+    state: present
+  become: true
+
+- ansible.builtin.group:
+    name: git
+    system: true
+  become: true
+
+- ansible.builtin.user:
+    name: git
+    system: true
+    shell: /bin/bash
+    comment: Git Version Control
+    group: git
+    password: '*' # disabled
+    home: /home/git
+  become: true
+
+- ansible.builtin.file:
+    name: /var/lib/forgejo
+    state: directory
+    owner: git
+    group: git
+    mode: '750'
+  become: true
+
+- ansible.builtin.file:
+    name: /etc/forgejo
+    state: directory
+    owner: git
+    group: git
+    mode: '750'
+  become: true
+
+- ansible.builtin.get_url:
+    url: https://codeberg.org/forgejo/forgejo/raw/branch/forgejo/contrib/systemd/forgejo.service
+    dest: /etc/systemd/system/forgejo.service
+  become: true
+
+- ansible.builtin.service:
+    name: forgejo
+    state: started
+    enabled: true
+  become: true
+
+# Main config has to be run before this will work
+- ansible.builtin.lineinfile:
+    path: /etc/forgejo/app.ini
+    regexp: '^DISABLE_REGISTRATION *='
+    line: DISABLE_REGISTRATION = true
+  become: true
