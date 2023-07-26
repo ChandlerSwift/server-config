@@ -4,6 +4,7 @@
     name: chandler
     comment: Chandler Swift
     groups: sudo
+  become: true
 
 - name: Set up SSH
   ansible.builtin.import_tasks: ssh.yml
@@ -15,7 +16,7 @@
     regexp: '^%sudo ALL='
     line: '%sudo ALL=(ALL:ALL) NOPASSWD: ALL'
     validate: /usr/sbin/visudo -cf %s
-  become: yes
+  become: true
   when: ansible_facts.distribution != "Archlinux"
 
 - name: Set passwordless sudo (Arch)
@@ -25,5 +26,11 @@
     regexp: '^%wheel ALL='
     line: '%wheel ALL=(ALL:ALL) NOPASSWD: ALL'
     validate: /usr/sbin/visudo -cf %s
-  become: yes
+  become: true
   when: ansible_facts.distribution == "Archlinux"
+
+- name: Install rsync
+  ansible.builtin.package:
+    name: rsync
+    state: present
+  become: true
