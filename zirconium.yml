@@ -41,6 +41,10 @@
     vars:
       server_names:
         - home.chandlerswift.com
+      additional_https_config: |
+        location /sheets {
+            autoindex on;
+        }
   - darylfanclub
   - flintlock
   - role: forwarder
@@ -54,7 +58,7 @@
   - role: forwarder
     vars:
       server_names:
-        - maps.chandlerswift.com
+        - map-tiles.chandlerswift.com
       proxy_pass: http://maps.home.chandlerswift.com:8080/
   - immich
   - role: forwarder
@@ -70,3 +74,7 @@
       server_names:
         - git.chandlerswift.com
       proxy_pass: http://localhost:3000/
+  - role: static-fileserver
+    vars:
+      server_names:
+        - maps.chandlerswift.com
