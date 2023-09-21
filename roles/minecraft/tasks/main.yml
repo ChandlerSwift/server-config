@@ -1,0 +1,46 @@
+---
+- name: Create user
+  ansible.builtin.user:
+    name: minecraft
+    shell: /usr/bin/false
+  become: yes
+
+- name: Install java
+  ansible.builtin.apt:
+    name: openjdk-17-jre-headless
+    state: present
+  become: yes
+
+- name: Download server
+  ansible.builtin.get_url:
+    url: https://piston-data.mojang.com/v1/objects/84194a2f286ef7c14ed7ce0090dba59902951553/server.jar
+    dest: /home/minecraft
+    owner: minecraft
+  become: yes
+
+- name: Install minecraft service
+  ansible.builtin.copy:
+    src: minecraft.service
+    dest: /lib/systemd/system/minecraft.service
+  become: yes
+  register: service
+
+- name: Accept EULA
+  ansible.builtin.copy:
+    content: "eula=true"
+    dest: /home/minecraft/eula.txt
+  become: true
+  become_user: minecraft
+
+- name: Reload systemd
+  ansible.builtin.systemd:
+    daemon_reload: yes
+  become: yes
+  when: service.changed
+
+- name: Start/enable minecraft
+  ansible.builtin.systemd:
+    name: minecraft
+    enabled: yes
+    state: started
+  become: yes
