@@ -17,6 +17,7 @@
     dest: /home/minecraft
     owner: minecraft
   become: yes
+  notify: restart minecraft
 
 - name: Install minecraft service
   ansible.builtin.copy:
