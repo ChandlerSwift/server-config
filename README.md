@@ -10,3 +10,8 @@ ansible-playbook -kKc paramiko zirconium.yml
 
 ### User per service
 https://blog.wesleyac.com/posts/how-i-run-my-servers
+
+### Editing secrets in ansible-vault
+```sh
+EDITOR="code --wait" ansible-vault edit group_vars/all.yml
+```
