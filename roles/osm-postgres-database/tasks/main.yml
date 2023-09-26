@@ -71,6 +71,12 @@
 #   ALTER TABLE geometry_columns OWNER TO postgres;
 #   ALTER TABLE spatial_ref_sys OWNER TO postgres;
 
+- name: Install Git
+  ansible.builtin.package:
+    name: git
+    state: present
+  become: true
+
 - name: Acquire openstreetmap-carto
   ansible.builtin.git:
     repo: https://github.com/gravitystorm/openstreetmap-carto

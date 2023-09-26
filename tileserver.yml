@@ -3,11 +3,8 @@
 # * Install Arch
 #   - `chandler` as sudo-enabled user
 #   - ssh server enabled
-# * additional packages (many of these come free with `base` and `base-devel`?):
-#     archlinux-keyring autoconf automake base binutils bison debugedit
-#     efibootmgr fakeroot file findutils flex gawk gcc gettext git grep groff
-#     gzip intel-ucode jre-openjdk libtool linux linux-firmware m4 make openssh
-#     pacman patch pkgconf python sed sudo texinfo which zram-generator
+#   - networking set up (default install plus systemd-networkd configured is adequate)
+#   - python installed
 #
 # Note that this machine as configured (16GB ram) is somewhat inadequate for
 # this -- it's going to do a fair bit of swapping to disk.
@@ -22,8 +19,8 @@
 # the sources are generated here. Then this VM could remain offline for the
 # bulk of the time. That will become increasingly important as I generate larger
 # extracts, specifically planet.pbf!)
-- name: Setup Maps
-  hosts: maps.home.chandlerswift.com
+- name: Setup tileserver
+  hosts: tileserver.home.chandlerswift.com
   roles:
   - common
   - vector-map-generator
