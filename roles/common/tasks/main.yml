@@ -5,6 +5,15 @@
     comment: Chandler Swift
     groups: sudo
   become: true
+  when: ansible_facts.distribution != "Archlinux"
+
+- name: Add `chandler` account
+  ansible.builtin.user:
+    name: chandler
+    comment: Chandler Swift
+    groups: wheel
+  become: true
+  when: ansible_facts.distribution == "Archlinux"
 
 - name: Set up SSH
   ansible.builtin.import_tasks: ssh.yml
