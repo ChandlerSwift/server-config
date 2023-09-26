@@ -34,6 +34,20 @@
       update_cache: true
     become: true
   # TODO: sudo zpool import -f nas
+
+  - name: Set up user for cameras
+    ansible.builtin.user:
+      name: cameras
+      create_home: false
+      password: "{{ nas_cameras_user_password | password_hash('sha512', salt) }}"
+    become: true
+  # - name: Create destination for cameras # TODO: ZFS pool, with size limit
+  #   ansible.builtin.file:
+  #     path: /nas/cameras
+  #     state: directory
+  #     owner: cameras
+  #   become: true
+
   - name: Install Restic
     ansible.builtin.apt:
       name: restic
