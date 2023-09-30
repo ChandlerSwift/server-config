@@ -59,8 +59,8 @@
   - role: forwarder
     vars:
       server_names:
-        - map-tiles.chandlerswift.com
-      proxy_pass: http://maps.home.chandlerswift.com:8080/
+        - tileserver.chandlerswift.com
+      proxy_pass: http://tileserver.home.chandlerswift.com:8080/
   - immich
   - role: forwarder
     vars:
