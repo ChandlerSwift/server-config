@@ -1,0 +1,44 @@
+---
+- name: Download server
+  ansible.builtin.get_url:
+    url: https://git.chandlerswift.com/chandlerswift/minecraft-site/releases/download/1.0.0/minecraft-site
+    dest: /home/minecraft/
+    mode: "755"
+  become: true
+  become_user: minecraft
+  notify: restart minecraft-site
+
+- name: Install minecraft-site config
+  ansible.builtin.copy:
+    src: config.json
+    dest: /home/minecraft/
+  become: true
+  become_user: minecraft
+  register: service
+
+- name: Install minecraft-site service
+  ansible.builtin.copy:
+    src: minecraft-site.service
+    dest: /lib/systemd/system/minecraft-site.service
+  become: true
+  register: service
+
+- name: Reload systemd
+  ansible.builtin.systemd:
+    daemon_reload: yes
+  become: yes
+  when: service.changed
+
+- name: Start/enable minecraft-site
+  ansible.builtin.systemd:
+    name: minecraft-site
+    enabled: yes
+    state: started
+  become: yes
+
+- import_role:
+    name: forwarder
+  vars:
+    server_names:
+      - minecraft.chandlerswift.com
+    proxy_pass: http://localhost:8000/

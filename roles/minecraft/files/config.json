@@ -1,0 +1,11 @@
+{
+    "title": "Chandler & Friends Minecraft",
+    "content": "Join us for the greatest game known to mankind! Email me at <a href='mailto:chandler@chandlerswift.com'>chandler@chandlerswift.com</a> and I'll add you to the whitelist.",
+    "serverport": 8000,
+    "servers": [
+        {
+            "host": "minecraft.chandlerswift.com",
+            "port": 42069
+        }
+    ]
+}

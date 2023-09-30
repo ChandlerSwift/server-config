@@ -45,3 +45,6 @@
     enabled: yes
     state: started
   become: yes
+
+- ansible.builtin.import_tasks:
+    file: minecraft-site.yml

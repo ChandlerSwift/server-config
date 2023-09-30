@@ -4,3 +4,9 @@
     name: minecraft
     state: restarted
   become: yes
+
+- name: restart minecraft-site
+  ansible.builtin.service:
+    name: minecraft-site
+    state: restarted
+  become: yes
