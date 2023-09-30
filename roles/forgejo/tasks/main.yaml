@@ -63,3 +63,13 @@
     regexp: '^DISABLE_REGISTRATION *='
     line: DISABLE_REGISTRATION = true
   become: true
+  notify: restart forgejo
+
+  # Main config has to be run before this will work
+- community.general.ini_file:
+    path: /etc/forgejo/app.ini
+    section: attachment
+    option: MAX_SIZE
+    value: 100 # MB
+  become: true
+  notify: restart forgejo

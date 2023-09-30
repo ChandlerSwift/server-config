@@ -1,0 +1,6 @@
+---
+- name: restart forgejo
+  ansible.builtin.service:
+    name: forgejo
+    state: restarted
+  become: true
