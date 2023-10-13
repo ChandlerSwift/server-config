@@ -1,7 +1,7 @@
 ---
 - name: Download server
   ansible.builtin.get_url:
-    url: https://git.chandlerswift.com/chandlerswift/minecraft-site/releases/download/1.0.0/minecraft-site
+    url: https://git.chandlerswift.com/chandlerswift/minecraft-site/releases/download/1.2.0/minecraft-site
     dest: /home/minecraft/
     mode: "755"
   become: true
