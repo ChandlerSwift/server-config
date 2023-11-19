@@ -12,7 +12,7 @@
   - minecraft
   - role: navidrome
     vars:
-      navidrome_version: 0.49.3
+      navidrome_version: 0.50.0
   - peertube
   - role: forwarder
     vars:
