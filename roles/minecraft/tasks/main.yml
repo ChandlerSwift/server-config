@@ -13,7 +13,7 @@
 
 - name: Download server
   ansible.builtin.get_url:
-    url: https://piston-data.mojang.com/v1/objects/5b868151bd02b41319f54c8d4061b8cae84e665c/server.jar
+    url: https://piston-data.mojang.com/v1/objects/450698d1863ab5180c25d7c804ef0fe6369dd1ba/server.jar
     dest: /home/minecraft
     owner: minecraft
   become: yes
